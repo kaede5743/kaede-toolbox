@@ -1,14 +1,14 @@
-# かえで配信ツールボックスを GitHub Pages (gh-pages ブランチ) に公開するスクリプト。
-# 使い方: PowerShell で  .\deploy.ps1
+# Deploy kaede-toolbox to GitHub Pages (gh-pages branch).
+# Usage (PowerShell): .\deploy.ps1
 $ErrorActionPreference = "Stop"
 
 flutter test
-if ($LASTEXITCODE -ne 0) { throw "テストが失敗したので中止します" }
+if ($LASTEXITCODE -ne 0) { throw "flutter test failed - deploy aborted" }
 
 flutter build web --release --base-href /kaede-toolbox/
-if ($LASTEXITCODE -ne 0) { throw "ビルドが失敗したので中止します" }
+if ($LASTEXITCODE -ne 0) { throw "flutter build failed - deploy aborted" }
 
-# Pages はデフォルトで Jekyll 処理するため、アンダースコア始まりのファイル対策で無効化
+# Disable Jekyll processing on Pages (files starting with underscore)
 New-Item -ItemType File -Force build\web\.nojekyll | Out-Null
 
 Push-Location build\web
@@ -22,4 +22,4 @@ try {
     Pop-Location
 }
 
-Write-Host "公開完了: https://kaede5743.github.io/kaede-toolbox/"
+Write-Host "Deployed: https://kaede5743.github.io/kaede-toolbox/"
